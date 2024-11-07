@@ -12,25 +12,23 @@ export async function extractText(file: File): Promise<string> {
       const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
       let fullText = '';
       
+      // Process pages in parallel for faster extraction
+      const pagePromises = [];
       for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const textContent = await page.getTextContent();
-        const pageText = textContent.items
-          .map((item: any) => item.str)
-          .join(' ');
-        fullText += pageText + '\n';
+        pagePromises.push(
+          pdf.getPage(i).then(async page => {
+            const textContent = await page.getTextContent();
+            return textContent.items
+              .map((item: any) => item.str)
+              .join(' ');
+          })
+        );
       }
       
+      const pageTexts = await Promise.all(pagePromises);
+      fullText = pageTexts.join('\n');
+      
       return fullText;
-    } 
-    
-    else if (
-      fileType === 'application/msword' || 
-      fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-    ) {
-      // For DOC/DOCX files, we'll need to implement a different solution
-      // or use a server-side approach
-      throw new Error('DOC/DOCX processing is not yet implemented for browser-only solution');
     } 
     
     else if (fileType === 'text/plain') {

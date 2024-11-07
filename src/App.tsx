@@ -1,29 +1,32 @@
 import { useState } from 'react';
-import { FileText, Loader2, Volume2 } from 'lucide-react';
+import { FileText, Loader2 } from 'lucide-react';
 import FileUpload from './components/FileUpload';
-import AudioPlayer from './components/AudioPlayer';
 import { extractText } from './utils/documentProcessor';
-import { textToSpeech } from './utils/ttsProcessor';
+import { PodcastTransformer } from './utils/podcastTransformer';
+import { DialogueSegment } from './types';
 
 function App() {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [audioUrl, setAudioUrl] = useState<string>('');
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [extractedText, setExtractedText] = useState('');
   const [error, setError] = useState<string>('');
+  const [progress, setProgress] = useState(0);
+  const [podcastScript, setPodcastScript] = useState<DialogueSegment[]>([]);
 
   const handleFileSelect = async (file: File) => {
     setIsProcessing(true);
     setError('');
-    setAudioUrl('');
-    setExtractedText('');
+    setPodcastScript([]);
+    setProgress(0);
     
     try {
+      // Extract text from document
       const text = await extractText(file);
-      setExtractedText(text);
+      setProgress(50);
 
-      const audioUrl = await textToSpeech(text.slice(0, 1000));
-      setAudioUrl(audioUrl);
+      // Transform to podcast format
+      const script = PodcastTransformer.transformText(text);
+      setPodcastScript(script.segments);
+      setProgress(100);
+
     } catch (error: any) {
       console.error('Error processing file:', error);
       setError(error.message || 'Failed to process document. Please try again.');
@@ -38,10 +41,10 @@ function App() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Document to Podcast Converter
+              Document to Podcast Script Converter
             </h1>
             <p className="text-lg text-gray-600">
-              Transform your documents into engaging audio content
+              Transform your documents into engaging podcast conversations
             </p>
           </div>
 
@@ -60,35 +63,42 @@ function App() {
             )}
 
             {isProcessing && (
-              <div className="flex items-center justify-center space-x-3 text-blue-600 my-8">
-                <Loader2 className="w-6 h-6 animate-spin" />
-                <span className="font-medium">Processing your document...</span>
+              <div className="space-y-2">
+                <div className="flex items-center justify-center space-x-3 text-blue-600 my-8">
+                  <Loader2 className="w-6 h-6 animate-spin" />
+                  <span className="font-medium">Processing your document... {progress}%</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2.5">
+                  <div 
+                    className="bg-blue-600 h-2.5 rounded-full transition-all duration-300" 
+                    style={{ width: `${progress}%` }}
+                  ></div>
+                </div>
               </div>
             )}
 
-            {audioUrl && !isProcessing && (
-              <div className="space-y-8">
-                <div className="border-t border-gray-200 pt-8">
-                  <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-                    <Volume2 className="w-6 h-6 mr-2" />
-                    Generated Audio
-                  </h2>
-                  <AudioPlayer
-                    audioUrl={audioUrl}
-                    isPlaying={isPlaying}
-                    onPlayPause={() => setIsPlaying(!isPlaying)}
-                    onRestart={() => setIsPlaying(false)}
-                  />
-                </div>
-
-                <div className="border-t border-gray-200 pt-8">
-                  <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-                    <FileText className="w-6 h-6 mr-2" />
-                    Extracted Text
-                  </h2>
-                  <div className="bg-gray-50 rounded-lg p-4 max-h-64 overflow-y-auto">
-                    <p className="text-gray-700 whitespace-pre-wrap">{extractedText}</p>
-                  </div>
+            {!isProcessing && podcastScript.length > 0 && (
+              <div className="border-t border-gray-200 pt-8">
+                <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                  <FileText className="w-6 h-6 mr-2" />
+                  Podcast Script
+                </h2>
+                <div className="bg-gray-50 rounded-lg p-4 max-h-96 overflow-y-auto">
+                  {podcastScript.map((segment, index) => (
+                    <div 
+                      key={index} 
+                      className={`mb-4 p-3 rounded ${
+                        segment.speaker === 'Host' 
+                          ? 'bg-blue-50' 
+                          : 'bg-green-50'
+                      }`}
+                    >
+                      <strong className="block text-sm text-gray-600 mb-1">
+                        {segment.speaker}:
+                      </strong>
+                      <p className="text-gray-700">{segment.text}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
