@@ -1,119 +1,123 @@
 import { DialogueSegment, PodcastScript } from '../types';
+import { TextProcessor } from './textProcessor';
 
 export class PodcastTransformer {
-  private static generateTopicIntro(text: string): string {
-    const firstParagraph = text.split(/\n\n|\r\n\r\n/)[0];
-    const keywords = this.extractKeywords(firstParagraph);
-    return `${keywords.join(', ')}`;
+  private static readonly SEGMENT_TYPES = {
+    INTRO: 'intro' as const,
+    TOPIC_INTRO: 'topic_intro' as const,
+    QUESTION: 'question' as const,
+    ANSWER: 'answer' as const,
+    DISCUSSION: 'discussion' as const,
+    TRANSITION: 'transition' as const,
+    SUMMARY: 'summary' as const,
+    CLOSING: 'closing' as const
+  };
+
+  private static generateIntro(topics: string[]): DialogueSegment {
+    return {
+      speaker: 'Host',
+      text: `Welcome to today's episode! I'm Sarah, and we're exploring ${topics.join(', ')}. 
+      Joining us today is Dr. Alex Thompson, an expert in these areas. 
+      We'll be diving deep into these topics and understanding their real-world implications.`,
+      type: this.SEGMENT_TYPES.INTRO
+    };
   }
 
-  private static extractKeywords(text: string): string[] {
-    // Remove common words and extract key terms
-    const commonWords = new Set(['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by']);
-    return text
-      .toLowerCase()
-      .split(/\W+/)
-      .filter(word => 
-        word.length > 3 && 
-        !commonWords.has(word) &&
-        !word.match(/^\d+$/)
-      )
-      .slice(0, 5);
-  }
-
-  private static generateQuestion(paragraph: string): string {
-    const keyPhrase = this.extractKeyPhrase(paragraph);
-    const questions = [
-      `Could you elaborate on ${keyPhrase}? What makes this particularly interesting?`,
-      `I'm curious about ${keyPhrase}. How does this impact the broader context?`,
-      `Let's dive deeper into ${keyPhrase}. What are the key aspects our listeners should know about?`,
-      `Many of our listeners might be wondering about ${keyPhrase}. Could you break this down for us?`,
-      `That's fascinating! Could you tell us more about how ${keyPhrase} fits into the bigger picture?`
+  private static generateQuestions(text: string): string[] {
+    const baseQuestions = [
+      `Could you explain ${text} in simple terms for our listeners?`,
+      `What are the key implications of ${text}?`,
+      `How does ${text} impact the broader context?`,
+      `What's your perspective on ${text}?`,
+      `Could you share some real-world examples of ${text}?`,
+      `What are the common misconceptions about ${text}?`,
+      `How has your experience with ${text} shaped your understanding?`,
+      `What future developments do you anticipate regarding ${text}?`,
+      `What challenges are commonly associated with ${text}?`,
+      `How can our listeners apply this knowledge about ${text} in their lives?`
     ];
-    return questions[Math.floor(Math.random() * questions.length)];
-  }
 
-  private static extractKeyPhrase(text: string): string {
-    const sentences = text.split(/[.!?]+/);
-    const firstSentence = sentences[0];
-    const words = firstSentence.split(' ').slice(0, 8).join(' ');
-    return words;
-  }
-
-  private static transformToAnswer(text: string): string {
-    const fillers = [
-      "That's an excellent question. ",
-      "I'm glad you asked about that. ",
-      "This is actually a fascinating topic. ",
-      "Let me break this down for our listeners. ",
-      "This is something I'm particularly passionate about. "
-    ];
-    const filler = fillers[Math.floor(Math.random() * fillers.length)];
-    return `${filler}${text}`;
+    return baseQuestions.sort(() => Math.random() - 0.5).slice(0, 2);
   }
 
   private static generateTransition(): string {
     const transitions = [
-      "That's a really insightful perspective. Let's explore another aspect of this topic.",
-      "Those are some excellent points. Building on that, I'd like to shift our focus slightly.",
-      "This conversation is bringing up some fascinating insights. Let's delve into another related area.",
-      "You've given our listeners a lot to think about. Now, I'd love to get your thoughts on a related topic.",
-      "That's such valuable information for our audience. Let's connect this to another important aspect."
+      "That's fascinating! Let's explore another aspect of this topic.",
+      "Those insights are really valuable. Building on that, I'd like to discuss...",
+      "This raises an interesting point about...",
+      "That's a crucial perspective. It reminds me of another aspect we should discuss...",
+      "Our listeners will find that interesting. Speaking of which..."
     ];
     return transitions[Math.floor(Math.random() * transitions.length)];
   }
 
   static transformText(text: string): PodcastScript {
+    const cleanText = TextProcessor.cleanText(text);
+    const mainTopics = TextProcessor.extractMainTopics(cleanText);
+    const paragraphs = TextProcessor.splitIntoParagraphs(cleanText);
     const segments: DialogueSegment[] = [];
-    
-    // Add introduction
-    segments.push({
-      speaker: 'Host',
-      text: `Welcome to today's episode! I'm Jane, and we're diving into a fascinating discussion about ${this.generateTopicIntro(text)}. We're joined by an expert who'll help us understand this topic in depth.`,
-      type: 'intro'
-    });
 
-    // Process main content
-    const paragraphs = text
-      .split(/\n\n|\r\n\r\n/)
-      .filter(p => p.trim().length > 50); // Filter out short paragraphs
-    
-    for (const paragraph of paragraphs) {
-      // Add question
+    // Add introduction
+    segments.push(this.generateIntro(mainTopics));
+
+    // Process each paragraph
+    paragraphs.forEach((paragraph, index) => {
+      const summary = TextProcessor.summarizeParagraph(paragraph);
+      const questions = this.generateQuestions(mainTopics[index % mainTopics.length]);
+
+      // Add first question
       segments.push({
         speaker: 'Host',
-        text: this.generateQuestion(paragraph),
-        type: 'question'
+        text: questions[0],
+        type: this.SEGMENT_TYPES.QUESTION
       });
 
       // Add answer
       segments.push({
         speaker: 'Guest',
-        text: this.transformToAnswer(paragraph),
-        type: 'answer'
+        text: summary,
+        type: this.SEGMENT_TYPES.ANSWER
       });
 
-      // Add occasional transitions (30% chance)
-      if (Math.random() < 0.3) {
+      // Add follow-up discussion
+      if (questions[1]) {
+        segments.push({
+          speaker: 'Host',
+          text: questions[1],
+          type: this.SEGMENT_TYPES.DISCUSSION
+        });
+
+        // Add guest's extended response
+        segments.push({
+          speaker: 'Guest',
+          text: `That's an excellent question. ${paragraph}`,
+          type: this.SEGMENT_TYPES.DISCUSSION
+        });
+      }
+
+      // Add transition (70% chance)
+      if (Math.random() < 0.7 && index < paragraphs.length - 1) {
         segments.push({
           speaker: 'Host',
           text: this.generateTransition(),
-          type: 'transition'
+          type: this.SEGMENT_TYPES.TRANSITION
         });
       }
-    }
+    });
 
-    // Add closing statement
+    // Add closing
     segments.push({
       speaker: 'Host',
-      text: "That brings us to the end of our discussion. Thank you for sharing your insights with us today. And to our listeners, thanks for joining us!",
-      type: 'closing'
+      text: `This has been an incredibly insightful discussion about ${mainTopics.join(', ')}. 
+      Thank you, Dr. Thompson, for sharing your expertise with us today. 
+      To our listeners, thanks for joining us. Don't forget to subscribe for more in-depth conversations like this one!`,
+      type: this.SEGMENT_TYPES.CLOSING
     });
 
     return {
-      title: `Exploring ${this.generateTopicIntro(text)}`,
+      title: `Exploring ${mainTopics.join(', ')}: An Expert's Perspective`,
       segments,
-      keyTakeaways: []
+      keyTakeaways: mainTopics
     };
   }
 }

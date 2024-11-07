@@ -1,7 +1,7 @@
 export interface DialogueSegment {
   speaker: 'Host' | 'Guest';
   text: string;
-  type: 'intro' | 'question' | 'answer' | 'transition' | 'closing';
+  type: 'intro' | 'topic_intro' | 'question' | 'answer' | 'discussion' | 'transition' | 'summary' | 'closing';
 }
 
 export interface PodcastScript {
