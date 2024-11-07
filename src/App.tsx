@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FileText, Loader2, Volume2 } from 'lucide-react';
 import FileUpload from './components/FileUpload';
 import AudioPlayer from './components/AudioPlayer';
