@@ -1,60 +1,36 @@
-import React, { useCallback } from 'react';
-import { Upload } from 'lucide-react';
+import React from 'react';
 
 interface FileUploadProps {
   onFileSelect: (file: File) => void;
 }
 
-const FileUpload: React.FC<FileUploadProps> = ({ onFileSelect }) => {
-  const handleDragOver = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-  }, []);
-
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    const file = e.dataTransfer.files[0];
+export default function FileUpload({ onFileSelect }: FileUploadProps) {
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (file) {
       onFileSelect(file);
     }
-  }, [onFileSelect]);
-
-  const handleFileInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      onFileSelect(file);
-    }
-  }, [onFileSelect]);
+  };
 
   return (
-    <div
-      className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-500 transition-colors"
-      onDragOver={handleDragOver}
-      onDrop={handleDrop}
-    >
-      <input
-        type="file"
-        id="file-upload"
-        className="hidden"
-        onChange={handleFileInput}
-        accept=".pdf,.doc,.docx,.txt"
-      />
-      <label
-        htmlFor="file-upload"
-        className="cursor-pointer flex flex-col items-center"
-      >
-        <Upload className="w-12 h-12 text-gray-400 mb-4" />
-        <span className="text-gray-600">
-          Drag and drop your file here, or click to select
-        </span>
-        <span className="text-sm text-gray-500 mt-2">
-          Supports PDF, DOC, DOCX, and TXT files
-        </span>
+    <div className="flex items-center justify-center w-full">
+      <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-700 border-dashed rounded-lg cursor-pointer bg-gray-900/30 hover:bg-gray-900/50 transition-colors">
+        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+          <svg className="w-8 h-8 mb-4 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+          </svg>
+          <p className="mb-2 text-sm text-gray-300">
+            <span className="font-semibold">Click to upload</span> or drag and drop
+          </p>
+          <p className="text-xs text-gray-400">PDF, DOC, DOCX, or TXT</p>
+        </div>
+        <input 
+          type="file" 
+          className="hidden" 
+          onChange={handleFileChange}
+          accept=".pdf,.doc,.docx,.txt"
+        />
       </label>
     </div>
   );
-};
-
-export default FileUpload;
+}
