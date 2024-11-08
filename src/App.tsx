@@ -1,107 +1,124 @@
 import { useState } from 'react';
-import { FileText, Loader2 } from 'lucide-react';
-import FileUpload from './components/FileUpload';
-import { extractText } from './utils/documentProcessor';
-import { PodcastTransformer } from './utils/podcastTransformer';
-import { DialogueSegment } from './types';
 
 function App() {
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState<string>('');
-  const [progress, setProgress] = useState(0);
-  const [podcastScript, setPodcastScript] = useState<DialogueSegment[]>([]);
-
-  const handleFileSelect = async (file: File) => {
-    setIsProcessing(true);
-    setError('');
-    setPodcastScript([]);
-    setProgress(0);
-    
-    try {
-      // Extract text from document
-      const text = await extractText(file);
-      setProgress(50);
-
-      // Transform to podcast format
-      const script = PodcastTransformer.transformText(text);
-      setPodcastScript(script.segments);
-      setProgress(100);
-
-    } catch (error: any) {
-      console.error('Error processing file:', error);
-      setError(error.message || 'Failed to process document. Please try again.');
-    } finally {
-      setIsProcessing(false);
-    }
+  const handleGetStarted = () => {
+    // Replace this URL with your deployed Gradio app URL
+    window.location.href = 'https://gabrielchua-open-notebooklm.hf.space';
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
       <div className="container mx-auto px-4 py-12">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-100 mb-4">
-              Document to Podcast Script Converter
+        <div className="max-w-4xl mx-auto text-center">
+          {/* Hero Section */}
+          <div className="mb-16">
+            <h1 className="text-5xl font-bold text-gray-100 mb-6">
+              Transform Documents into Engaging Podcasts
             </h1>
-            <p className="text-lg text-gray-300">
-              Transform your documents into engaging podcast conversations
+            <p className="text-xl text-gray-300 mb-8">
+              Convert your PDFs into natural-sounding podcast conversations using advanced AI technology
             </p>
+            <button
+              onClick={handleGetStarted}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition-colors duration-300 transform hover:scale-105"
+            >
+              Get Started
+            </button>
           </div>
 
-          <div className="bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-700">
-            <div className="mb-8">
-              <h2 className="text-xl font-semibold text-gray-200 mb-4">
-                Upload Your Document
-              </h2>
-              <FileUpload onFileSelect={handleFileSelect} />
+          {/* Features Section */}
+          <div className="grid md:grid-cols-3 gap-8 mb-16">
+            <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
+              <div className="text-blue-400 text-4xl mb-4">📄</div>
+              <h3 className="text-xl font-semibold text-gray-200 mb-2">
+                PDF Support
+              </h3>
+              <p className="text-gray-400">
+                Upload any PDF document and convert it into a podcast
+              </p>
             </div>
+            <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
+              <div className="text-blue-400 text-4xl mb-4">🎙️</div>
+              <h3 className="text-xl font-semibold text-gray-200 mb-2">
+                Natural Conversations
+              </h3>
+              <p className="text-gray-400">
+                AI-powered dialogue generation for engaging content
+              </p>
+            </div>
+            <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
+              <div className="text-blue-400 text-4xl mb-4">🌐</div>
+              <h3 className="text-xl font-semibold text-gray-200 mb-2">
+                Multiple Languages
+              </h3>
+              <p className="text-gray-400">
+                Support for various languages and customizable tones
+              </p>
+            </div>
+          </div>
 
-            {error && (
-              <div className="bg-red-900/50 text-red-200 p-4 rounded-lg mb-8 border border-red-800">
-                {error}
-              </div>
-            )}
-
-            {isProcessing && (
-              <div className="space-y-2">
-                <div className="flex items-center justify-center space-x-3 text-blue-400 my-8">
-                  <Loader2 className="w-6 h-6 animate-spin" />
-                  <span className="font-medium">Processing your document... {progress}%</span>
+          {/* How It Works Section */}
+          <div className="text-left mb-16">
+            <h2 className="text-3xl font-bold text-gray-100 mb-8 text-center">
+              How It Works
+            </h2>
+            <div className="space-y-6">
+              <div className="flex items-start space-x-4">
+                <div className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                  1
                 </div>
-                <div className="w-full bg-gray-700 rounded-full h-2.5">
-                  <div 
-                    className="bg-blue-500 h-2.5 rounded-full transition-all duration-300" 
-                    style={{ width: `${progress}%` }}
-                  ></div>
-                </div>
-              </div>
-            )}
-
-            {!isProcessing && podcastScript.length > 0 && (
-              <div className="border-t border-gray-700 pt-8">
-                <h2 className="text-xl font-semibold text-gray-200 mb-4 flex items-center">
-                  <FileText className="w-6 h-6 mr-2" />
-                  Podcast Script
-                </h2>
-                <div className="bg-gray-900/50 rounded-lg p-4 max-h-96 overflow-y-auto">
-                  {podcastScript.map((segment, index) => (
-                    <div 
-                      key={index} 
-                      className={`mb-4 p-3 rounded ${
-                        segment.speaker === 'Host' 
-                          ? 'bg-blue-900/30 border border-blue-800/50' 
-                          : 'bg-emerald-900/30 border border-emerald-800/50'
-                      }`}
-                    >
-                      <strong className="block text-sm text-gray-300 mb-1">
-                        {segment.speaker}:
-                      </strong>
-                      <p className="text-gray-200">{segment.text}</p>
-                    </div>
-                  ))}
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-200 mb-2">
+                    Upload Your Document
+                  </h3>
+                  <p className="text-gray-400">
+                    Simply upload your PDF file to our platform
+                  </p>
                 </div>
               </div>
-            )}
+              <div className="flex items-start space-x-4">
+                <div className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                  2
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-200 mb-2">
+                    Customize Settings
+                  </h3>
+                  <p className="text-gray-400">
+                    Choose your preferred tone, length, and language
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-4">
+                <div className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                  3
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-200 mb-2">
+                    Generate Podcast
+                  </h3>
+                  <p className="text-gray-400">
+                    Get your AI-generated podcast in minutes
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* CTA Section */}
+          <div className="bg-gray-800 p-8 rounded-lg border border-gray-700">
+            <h2 className="text-2xl font-bold text-gray-100 mb-4">
+              Ready to Convert Your Documents?
+            </h2>
+            <p className="text-gray-300 mb-6">
+              Transform your content into engaging podcast conversations today
+            </p>
+            <button
+              onClick={handleGetStarted}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300 transform hover:scale-105"
+            >
+              Get Started Now
+            </button>
           </div>
         </div>
       </div>
