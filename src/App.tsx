@@ -1,9 +1,7 @@
-import { useState } from 'react';
-
 function App() {
   const handleGetStarted = () => {
-    // Replace this URL with your deployed Gradio app URL
-    window.location.href = 'https://gabrielchua-open-notebooklm.hf.space';
+    // Updated URL to your deployed Gradio app
+    window.location.href = 'https://huggingface.co/spaces/tmleyncodes/LumeCast';
   };
 
   return (
