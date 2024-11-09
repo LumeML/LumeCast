@@ -36,8 +36,8 @@ LumeCast is an innovative AI-powered platform that transforms documents into eng
 
 1. Clone the repository
 ```bash
-git clone https://github.com/your-organization/lumecast.git
-cd lumecast
+https://github.com/LumeML/LumeCast.git
+cd LumeCast
 ```
 
 2. Install dependencies
@@ -76,7 +76,7 @@ For detailed documentation, please visit our [Wiki](link-to-wiki).
 
 ### API Reference
 
-The LumeCast API is built on Gradio and hosted on Hugging Face Spaces. Access the API at:
+The LumeCast API is built on Gradio and hosted on Hugging Face Spaces. Access the API and the deployment of the ML Model at:
 ```
 https://huggingface.co/spaces/tmleyncodes/LumeCast
 ```
