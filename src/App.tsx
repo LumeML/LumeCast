@@ -118,6 +118,76 @@ function App() {
               Get Started Now
             </button>
           </div>
+          {/* Footer Section */}
+          <footer className="mt-16 border-t border-gray-700 pt-8">
+            <div className="grid md:grid-cols-3 gap-8 text-left">
+              {/* About */}
+              <div>
+                <h3 className="text-xl font-semibold text-gray-200 mb-3">LumeCast</h3>
+                <p className="text-gray-400">
+                  Transforming the way you consume written content through AI-powered podcast generation.
+                </p>
+              </div>
+
+              {/* Quick Links */}
+              <div>
+                <h3 className="text-xl font-semibold text-gray-200 mb-3">Quick Links</h3>
+                <ul className="space-y-2">
+                  <li>
+                    <a 
+                      href="https://github.com/yourusername/repository-name" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-gray-400 hover:text-blue-400 transition-colors"
+                    >
+                      GitHub Repository
+                    </a>
+                  </li>
+                  <li>
+                    <a 
+                      href="https://github.com/yourusername/repository-name/issues" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-gray-400 hover:text-blue-400 transition-colors"
+                    >
+                      Report Issues
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Contribute */}
+              <div>
+                <h3 className="text-xl font-semibold text-gray-200 mb-3">Contribute</h3>
+                <p className="text-gray-400 mb-3">
+                  Want to contribute? We welcome contributions of all kinds!
+                </p>
+                <a 
+                  href="https://github.com/yourusername/repository-name/blob/main/CONTRIBUTING.md" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                >
+                  How to Contribute
+                </a>
+              </div>
+            </div>
+
+            {/* Copyright */}
+            <div className="mt-8 pt-8 border-t border-gray-700 text-center text-gray-400">
+              <p>© 2024 LumeCast. All rights reserved.</p>
+              <div className="mt-2 flex items-center justify-center space-x-4">
+                <a 
+                  href="https://github.com/yourusername" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-blue-400 transition-colors"
+                >
+                  <i className="fab fa-github text-xl"></i> {/* Requires Font Awesome */}
+                </a>
+              </div>
+            </div>
+          </footer>
         </div>
       </div>
     </div>
