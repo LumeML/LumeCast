@@ -4,7 +4,7 @@
   <h1>LumeCast</h1>
   <p>Transform Documents into Engaging Podcast Conversations</p>
 
-  [![Deployment Status](https://img.shields.io/badge/deployment-live-brightgreen)](https://huggingface.co/spaces/tmleyncodes/LumeCast)
+  [![Deployment Status](https://img.shields.io/badge/deployment-live-brightgreen)](https://lumecast.vercel.app/)
   [![React](https://img.shields.io/badge/React-18.x-blue)](https://reactjs.org/)
   [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
   [![Gradio](https://img.shields.io/badge/Gradio-4.19.2-orange)](https://gradio.app/)
