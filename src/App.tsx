@@ -135,7 +135,7 @@ function App() {
                 <ul className="space-y-2">
                   <li>
                     <a 
-                      href="https://github.com/yourusername/repository-name" 
+                      href="https://github.com/LumeML/LumeCast" 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-gray-400 hover:text-blue-400 transition-colors"
@@ -145,7 +145,7 @@ function App() {
                   </li>
                   <li>
                     <a 
-                      href="https://github.com/yourusername/repository-name/issues" 
+                      href="https://github.com/LumeML/LumeCast/issues" 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-gray-400 hover:text-blue-400 transition-colors"
@@ -163,7 +163,7 @@ function App() {
                   Want to contribute? We welcome contributions of all kinds!
                 </p>
                 <a 
-                  href="https://github.com/yourusername/repository-name/blob/main/CONTRIBUTING.md" 
+                  href="https://github.com/LumeML/LumeCast/blob/main/CONTRIBUTING.md" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
@@ -178,7 +178,7 @@ function App() {
               <p>© 2024 LumeCast. All rights reserved.</p>
               <div className="mt-2 flex items-center justify-center space-x-4">
                 <a 
-                  href="https://github.com/yourusername" 
+                  href="https://github.com/LumeML/LumeCast" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-blue-400 transition-colors"
