@@ -72,7 +72,7 @@ npm run dev
 
 ## 📖 Documentation
 
-For detailed documentation, please visit our [Wiki](link-to-wiki).
+For detailed documentation, please visit our [API Documentation](api-documentation.MD).
 
 ### API Reference
 
